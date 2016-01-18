@@ -1,6 +1,11 @@
 package com.goodformentertainment.tool.card.model;
 
 public class Deck extends CardStack {
+    public Deck() {
+        super();
+        setFaceUp(false);
+    }
+
     /**
      * Take all the Cards from the Discard and add them to the bottom of this Deck.
      *

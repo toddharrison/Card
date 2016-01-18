@@ -54,3 +54,19 @@
     -fx-border-width: 2;
     -fx-border-style: solid;
 }
+
+.table {
+    -fx-padding: 15;
+    -fx-background-color: green;
+
+    -fx-border-color: darkgreen;
+    -fx-border-width: 5;
+    -fx-border-style: solid;
+}
+
+.stack-size {
+    -fx-font-size: 32px;
+    -fx-font-family: "Arial Black";
+    -fx-text-fill: FIREBRICK;
+    -fx-effect: dropshadow( gaussian, WHITE , 5, 0.75, 0,0 );
+}

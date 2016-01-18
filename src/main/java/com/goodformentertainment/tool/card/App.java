@@ -4,14 +4,16 @@ import org.apache.log4j.Logger;
 
 import com.goodformentertainment.tool.card.model.Card;
 import com.goodformentertainment.tool.card.model.Deck;
+import com.goodformentertainment.tool.card.model.Discard;
 import com.goodformentertainment.tool.card.model.Game;
 import com.goodformentertainment.tool.card.model.Player;
+import com.goodformentertainment.tool.card.model.Table;
 import com.goodformentertainment.tool.card.view.CardImager;
 import com.goodformentertainment.tool.card.view.HandView;
+import com.goodformentertainment.tool.card.view.TableView;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -27,7 +29,9 @@ public class App extends Application {
     private final Game game;
     private final Player playerTodd;
     private final Player playerTory;
+    private Table table;
     private Deck deck;
+    private Discard discard;
 
     // @FXML
     // private Text actiontarget;
@@ -44,7 +48,11 @@ public class App extends Application {
 
     @Override
     public void start(final Stage stage) throws Exception {
+        table = new Table();
         deck = createDeck(stage);
+        discard = new Discard();
+        table.place(deck);
+        table.place(discard);
 
         deck.shuffle();
 
@@ -58,8 +66,8 @@ public class App extends Application {
         final HandView toddHandView = new HandView(imager, stage, playerTodd.getHand());
         root.setTop(toddHandView.getPane());
 
-        final Label tableNode = new Label("Table");
-        root.setCenter(tableNode);
+        final TableView tableView = new TableView(imager, stage, table);
+        root.setCenter(tableView.getPane());
 
         final HandView toryHandView = new HandView(imager, stage, playerTory.getHand());
         root.setBottom(toryHandView.getPane());

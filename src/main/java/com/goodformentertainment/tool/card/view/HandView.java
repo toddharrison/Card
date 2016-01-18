@@ -3,7 +3,6 @@ package com.goodformentertainment.tool.card.view;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
-import java.util.Observer;
 
 import org.apache.log4j.Logger;
 
@@ -14,10 +13,11 @@ import com.goodformentertainment.tool.card.model.Placeable;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
-public class HandView implements Observer {
+public class HandView implements View<Hand> {
     private static final Logger LOG = Logger.getLogger(HandView.class);
 
     private final CardImager imager;
@@ -35,6 +35,7 @@ public class HandView implements Observer {
 
         pane = new FlowPane();
         pane.setOrientation(Orientation.HORIZONTAL);
+        pane.setAlignment(Pos.CENTER);
         pane.setPadding(new Insets(10));
         pane.setHgap(5);
         pane.setVgap(5);
@@ -42,10 +43,12 @@ public class HandView implements Observer {
         updateCards();
     }
 
-    public Hand getHand() {
+    @Override
+    public Hand getModel() {
         return hand;
     }
 
+    @Override
     public FlowPane getPane() {
         return pane;
     }

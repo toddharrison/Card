@@ -1,7 +1,6 @@
 package com.goodformentertainment.tool.card.view;
 
 import java.util.Observable;
-import java.util.Observer;
 import java.util.Optional;
 
 import org.apache.log4j.Logger;
@@ -15,7 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class StackView implements Observer {
+public class StackView implements View<CardStack> {
     private static final Logger LOG = Logger.getLogger(StackView.class);
 
     private static final String STYLE_STACK_SIZE = "stack-size";
@@ -37,12 +36,15 @@ public class StackView implements Observer {
         pane.getChildren().add(stackSize);
 
         updateStackSizeLabel();
+        updateCardView();
     }
 
-    public CardStack getCardStack() {
+    @Override
+    public CardStack getModel() {
         return stack;
     }
 
+    @Override
     public StackPane getPane() {
         return pane;
     }
@@ -67,18 +69,22 @@ public class StackView implements Observer {
                     // Do nothing
                     break;
                 case TOP:
-                    final Optional<Card> card = stack.viewTop();
-                    if (card.isPresent()) {
-                        cardView.setCard(card.get());
-                    } else {
-                        cardView.removeCard();
-                    }
+                    updateCardView();
                     break;
             }
         }
     }
 
     private void updateStackSizeLabel() {
-        stackSize.setText("(" + stack.size() + ")");
+        stackSize.setText(Integer.toString(stack.size()));
+    }
+
+    private void updateCardView() {
+        final Optional<Card> card = stack.viewTop();
+        if (card.isPresent()) {
+            cardView.setCard(card.get());
+        } else {
+            cardView.removeCard();
+        }
     }
 }

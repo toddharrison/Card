@@ -1,8 +1,6 @@
 package com.goodformentertainment.tool.card.view;
 
 import java.util.Observable;
-import java.util.Observer;
-import java.util.Optional;
 
 import org.apache.log4j.Logger;
 
@@ -18,7 +16,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
-public class CardView implements Observer {
+public class CardView implements View<Card> {
     private static final Logger LOG = Logger.getLogger(CardView.class);
 
     private static final String STYLE_CARD = "card-small";
@@ -27,12 +25,16 @@ public class CardView implements Observer {
     private static final int SIZE_SMALL = 100;
     private static final int SIZE_POPUP = 500;
 
+    private static boolean showingPopupCard;
+
     private final CardImager imager;
     private final Stage stage;
     private final StackPane pane;
     private final ImageView view;
 
-    private Optional<Card> card;
+    private Card card;
+    private EventHandler<MouseEvent> onClickHandler;
+    private Tooltip tooltip;
 
     public CardView(final CardImager imager, final Stage stage) {
         this.imager = imager;
@@ -42,25 +44,27 @@ public class CardView implements Observer {
         pane.getStyleClass().add(STYLE_CARD);
     }
 
+    @Override
     public StackPane getPane() {
         return pane;
     }
 
-    public Optional<Card> getCard() {
+    @Override
+    public Card getModel() {
         return card;
     }
 
     public void setCard(final Card card) {
-        this.card = Optional.of(card);
+        this.card = card;
         setImageByCardFacing();
         card.addObserver(this);
     }
 
     public void removeCard() {
-        if (card.isPresent()) {
+        if (card != null) {
             view.setImage(imager.getEmptyImage(SIZE_SMALL));
-            card.get().deleteObserver(this);
-            card = Optional.empty();
+            card.deleteObserver(this);
+            card = null;
 
             if (onClickHandler != null) {
                 view.removeEventHandler(MouseEvent.MOUSE_CLICKED, onClickHandler);
@@ -86,13 +90,9 @@ public class CardView implements Observer {
         }
     }
 
-    private static boolean showingPopupCard;
-    private EventHandler<MouseEvent> onClickHandler;
-    private Tooltip tooltip;
-
     private void setImageByCardFacing() {
-        if (card.isPresent()) {
-            final Card c = card.get();
+        if (card != null) {
+            final Card c = card;
             if (c.isFaceUp()) {
                 view.setImage(imager.getCardImage(c.getName(), SIZE_SMALL));
 

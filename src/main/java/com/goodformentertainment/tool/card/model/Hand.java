@@ -1,6 +1,5 @@
 package com.goodformentertainment.tool.card.model;
 
-import java.awt.Point;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,16 +53,15 @@ public class Hand extends CardList {
     }
 
     /**
-     * Place the specified Card from this Hand onto the specified Table at the specified Point.
+     * Place the specified Card from this Hand onto the specified Table.
      *
      * @param card
      * @param table
-     * @param point
      */
-    public void place(final Card card, final Table table, final Point point) {
+    public void place(final Card card, final Table table) {
         if (has(card)) {
             take(card);
-            table.place(card, point);
+            table.place(card);
         } else {
             throw new IllegalArgumentException("That Card is not in this Hand");
         }

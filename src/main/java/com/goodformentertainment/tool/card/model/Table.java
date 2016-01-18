@@ -1,49 +1,60 @@
 package com.goodformentertainment.tool.card.model;
 
-import java.awt.Point;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Observable;
 
-public class Table {
-    private final Set<Placeable> placeables;
+public class Table extends Observable {
+    private final List<Placeable> placeables;
 
     public Table() {
-        placeables = new HashSet<>();
+        placeables = new LinkedList<>();
     }
 
     /**
-     * Gets an unmodifiable Set of all of the Placeables on this Table.
-     * 
+     * Gets an unmodifiable List of all of the Placeables on this Table.
+     *
      * @return
      */
-    public Set<Placeable> getPlaceables() {
-        return Collections.unmodifiableSet(placeables);
+    public List<Placeable> getPlaceables() {
+        return Collections.unmodifiableList(placeables);
     }
 
     /**
-     * Places the specified Placeable on this Table at the specified Point.
-     * 
+     * Places the specified Placeable on this Table.
+     *
      * @param placeable
-     * @param point
      */
-    public void place(final Placeable placeable, final Point point) {
+    public void place(final Placeable placeable) {
         placeables.add(placeable);
-        placeable.place(new Location(this, point));
+        placeable.place(new Location(this, null));
+        setChanged();
+        notifyObservers(Observe.LENGTH);
+    }
+
+    public boolean has(final Placeable placeable) {
+        return placeables.contains(placeable);
     }
 
     /**
      * Picks up the specified Placeable from this Table.
-     * 
+     *
      * @param placeable
      * @return
      */
     public Placeable pickup(final Placeable placeable) {
         if (placeables.remove(placeable)) {
             placeable.pickup();
+            setChanged();
+            notifyObservers(Observe.LENGTH);
             return placeable;
         } else {
             throw new IllegalArgumentException("That Placeable is not on this Table");
         }
+    }
+
+    public enum Observe {
+        LENGTH
     }
 }
