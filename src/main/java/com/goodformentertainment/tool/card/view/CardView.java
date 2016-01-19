@@ -11,6 +11,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Popup;
@@ -97,11 +98,13 @@ public class CardView implements View<Card> {
                 view.setImage(imager.getCardImage(c.getName(), SIZE_SMALL));
 
                 onClickHandler = (event) -> {
-                    if (!showingPopupCard) {
-                        createPopup(c.getName()).show(stage);
-                        showingPopupCard = true;
+                    if (event.getButton() == MouseButton.PRIMARY) {
+                        if (!showingPopupCard) {
+                            createPopup(c.getName()).show(stage);
+                            showingPopupCard = true;
+                        }
+                        event.consume();
                     }
-                    event.consume();
                 };
                 view.addEventHandler(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
@@ -130,9 +133,11 @@ public class CardView implements View<Card> {
         popupPane.getStyleClass().add(STYLE_POPUP);
         popup.getContent().add(popupPane);
         popup.addEventHandler(MouseEvent.MOUSE_CLICKED, (event) -> {
-            popup.hide();
-            showingPopupCard = false;
-            event.consume();
+            if (event.getButton() == MouseButton.PRIMARY) {
+                popup.hide();
+                showingPopupCard = false;
+                event.consume();
+            }
         });
 
         return popup;
