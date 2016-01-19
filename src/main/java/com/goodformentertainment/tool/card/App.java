@@ -11,6 +11,7 @@ import com.goodformentertainment.tool.card.model.Table;
 import com.goodformentertainment.tool.card.view.CardImager;
 import com.goodformentertainment.tool.card.view.HandView;
 import com.goodformentertainment.tool.card.view.TableView;
+import com.goodformentertainment.tool.card.view.TableView.Position;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -27,8 +28,8 @@ public class App extends Application {
     private final CardImager imager;
 
     private final Game game;
-    private final Player playerTodd;
-    private final Player playerTory;
+    private final Player northPlayer;
+    private final Player southPlayer;
     private Table table;
     private Deck deck;
     private Discard discard;
@@ -40,10 +41,10 @@ public class App extends Application {
         imager = new CardImager("images/empty.png");
 
         game = new Game();
-        playerTodd = new Player("Todd");
-        game.addPlayer(playerTodd);
-        playerTory = new Player("Tory");
-        game.addPlayer(playerTory);
+        northPlayer = new Player("North");
+        game.addPlayer(northPlayer);
+        southPlayer = new Player("South");
+        game.addPlayer(southPlayer);
     }
 
     @Override
@@ -56,20 +57,27 @@ public class App extends Application {
 
         deck.shuffle();
 
-        playerTodd.getHand().draw(deck, 5);
-        playerTory.getHand().draw(deck, 5);
-        playerTodd.getHand().setFaceUp(false);
+        northPlayer.getHand().draw(deck, 3);
+        southPlayer.getHand().draw(deck, 3);
+        northPlayer.getHand().setFaceUp(false);
+
+        northPlayer.getMeld().place(deck.take(2));
+        northPlayer.getMeld().setFaceUp(true);
+        southPlayer.getMeld().place(deck.take(1));
+        southPlayer.getMeld().setFaceUp(true);
 
         // final Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("app.fxml"));
         final BorderPane root = new BorderPane();
 
-        final HandView toddHandView = new HandView(imager, stage, playerTodd.getHand());
+        final HandView toddHandView = new HandView(imager, stage, northPlayer.getHand());
         root.setTop(toddHandView.getPane());
 
         final TableView tableView = new TableView(imager, stage, table);
+        tableView.setMeld(northPlayer.getMeld(), Position.NORTH);
+        tableView.setMeld(southPlayer.getMeld(), Position.SOUTH);
         root.setCenter(tableView.getPane());
 
-        final HandView toryHandView = new HandView(imager, stage, playerTory.getHand());
+        final HandView toryHandView = new HandView(imager, stage, southPlayer.getHand());
         root.setBottom(toryHandView.getPane());
 
         final Scene scene = new Scene(root);

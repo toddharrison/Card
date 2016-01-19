@@ -33,6 +33,15 @@ public class Table extends Observable {
         notifyObservers(Observe.LENGTH);
     }
 
+    public void place(final List<? extends Placeable> placeables) {
+        for (final Placeable placeable : placeables) {
+            this.placeables.add(placeable);
+            placeable.place(new Location(this, null));
+        }
+        setChanged();
+        notifyObservers(Observe.LENGTH);
+    }
+
     public boolean has(final Placeable placeable) {
         return placeables.contains(placeable);
     }
