@@ -68,11 +68,11 @@ public class CardView implements View<Card> {
             card = null;
 
             if (onClickHandler != null) {
-                view.removeEventHandler(MouseEvent.MOUSE_CLICKED, onClickHandler);
+                pane.removeEventHandler(MouseEvent.MOUSE_CLICKED, onClickHandler);
                 onClickHandler = null;
             }
             if (tooltip != null) {
-                Tooltip.uninstall(view, tooltip);
+                Tooltip.uninstall(pane, tooltip);
             }
         }
     }
@@ -106,20 +106,20 @@ public class CardView implements View<Card> {
                         event.consume();
                     }
                 };
-                view.addEventHandler(MouseEvent.MOUSE_CLICKED, onClickHandler);
+                pane.addEventHandler(MouseEvent.MOUSE_CLICKED, onClickHandler);
 
                 tooltip = new Tooltip();
                 tooltip.setText(c.getName());
-                Tooltip.install(view, tooltip);
+                Tooltip.install(pane, tooltip);
             } else {
                 view.setImage(imager.getTypeImage(c.getType(), SIZE_SMALL));
 
                 if (onClickHandler != null) {
-                    view.removeEventHandler(MouseEvent.MOUSE_CLICKED, onClickHandler);
+                    pane.removeEventHandler(MouseEvent.MOUSE_CLICKED, onClickHandler);
                     onClickHandler = null;
                 }
                 if (tooltip != null) {
-                    Tooltip.uninstall(view, tooltip);
+                    Tooltip.uninstall(pane, tooltip);
                 }
             }
         }
