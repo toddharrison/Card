@@ -51,7 +51,7 @@ public class GameView extends View<Game> {
 
     @Override
     public void update(final Observable o, final Object arg) {
-        LOG.info("update: " + arg);
+        LOG.debug("update: " + arg);
         if (arg instanceof Game.Observe) {
             switch ((Game.Observe) arg) {
                 case PLAYERS:

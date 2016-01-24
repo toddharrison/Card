@@ -86,7 +86,7 @@ public class CardView extends View<Card> {
 
     @Override
     public void update(final Observable o, final Object arg) {
-        LOG.info("update: " + arg);
+        LOG.debug("update: " + arg);
         if (arg instanceof Placeable.Observe) {
             switch ((Placeable.Observe) arg) {
                 case FACING:

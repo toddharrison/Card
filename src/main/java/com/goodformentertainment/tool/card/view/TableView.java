@@ -67,7 +67,7 @@ public class TableView extends View<Table> {
 
     @Override
     public void update(final Observable o, final Object arg) {
-        LOG.info("update: " + arg);
+        LOG.debug("update: " + arg);
         if (arg instanceof Table.Observe) {
             switch ((Table.Observe) arg) {
                 case LENGTH:

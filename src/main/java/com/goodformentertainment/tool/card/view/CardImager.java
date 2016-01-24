@@ -27,7 +27,7 @@ public class CardImager {
         rawTypeImages = new HashMap<>();
         cachedTypes = new HashMap<>();
 
-        LOG.info("Created CardImager with empty: " + emptyUrl);
+        LOG.debug("Created CardImager with empty: " + emptyUrl);
     }
 
     public Image getEmptyImage(final int size) {
