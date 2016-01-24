@@ -70,3 +70,10 @@
     -fx-text-fill: FIREBRICK;
     -fx-effect: dropshadow( gaussian, WHITE , 5, 0.75, 0,0 );
 }
+
+.meld {
+    -fx-border-color: grey;
+    -fx-border-insets: 5;
+    -fx-border-width: 3;
+    -fx-border-style: dotted;
+}

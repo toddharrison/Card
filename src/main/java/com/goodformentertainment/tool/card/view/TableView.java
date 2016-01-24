@@ -1,5 +1,7 @@
 package com.goodformentertainment.tool.card.view;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
@@ -18,7 +20,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
-public class TableView implements View<Table> {
+public class TableView extends View<Table> {
     private static final Logger LOG = Logger.getLogger(TableView.class);
 
     private static final String STYLE_TABLE = "table";
@@ -43,9 +45,12 @@ public class TableView implements View<Table> {
         centerPane.setVgap(5);
         BorderPane.setMargin(centerPane, new Insets(15));
 
+        centerPane.setMinHeight(CardView.MAX_CARD_SIZE);
+        centerPane.setMinWidth(CardView.MAX_CARD_SIZE);
+
         pane = new BorderPane(centerPane);
         pane.getStyleClass().add(STYLE_TABLE);
-        BorderPane.setMargin(pane, new Insets(15));
+        BorderPane.setMargin(pane, new Insets(5));
 
         updatePlaceables();
     }
@@ -111,6 +116,10 @@ public class TableView implements View<Table> {
     }
 
     public enum Position {
-        NORTH, SOUTH, EAST, WEST
+        NORTH, SOUTH, EAST, WEST;
+
+        public static Iterator<Position> iterator() {
+            return Arrays.asList(Position.values()).iterator();
+        }
     }
 }

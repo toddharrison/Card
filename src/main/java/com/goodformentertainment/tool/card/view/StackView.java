@@ -8,13 +8,17 @@ import org.apache.log4j.Logger;
 import com.goodformentertainment.tool.card.model.Card;
 import com.goodformentertainment.tool.card.model.CardList;
 import com.goodformentertainment.tool.card.model.CardStack;
+import com.goodformentertainment.tool.card.model.Deck;
+import com.goodformentertainment.tool.card.model.Discard;
 import com.goodformentertainment.tool.card.model.Placeable;
 
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class StackView implements View<CardStack> {
+public class StackView extends View<CardStack> {
     private static final Logger LOG = Logger.getLogger(StackView.class);
 
     private static final String STYLE_STACK_SIZE = "stack-size";
@@ -34,6 +38,8 @@ public class StackView implements View<CardStack> {
         pane = new StackPane();
         pane.getChildren().add(cardView.getPane());
         pane.getChildren().add(stackSize);
+
+        addContextMenu();
 
         updateStackSizeLabel();
         updateCardView();
@@ -73,6 +79,28 @@ public class StackView implements View<CardStack> {
                     break;
             }
         }
+    }
+
+    private void addContextMenu() {
+        final ContextMenu contextMenu = new ContextMenu();
+        if (stack instanceof Deck) {
+            final MenuItem draw = new MenuItem("Draw");
+            contextMenu.getItems().addAll(draw);
+        } else if (stack instanceof Discard) {
+            final MenuItem take = new MenuItem("Take");
+            contextMenu.getItems().addAll(take);
+        } else {
+            throw new UnsupportedOperationException(
+                    "Unknown CardStack type: " + stack.getClass().getName());
+        }
+
+        pane.setOnMousePressed((event) -> {
+            if (event.isSecondaryButtonDown()) {
+                contextMenu.show(pane, event.getScreenX(), event.getScreenY());
+                // event.consume();
+                LOG.info("Queried for menu");
+            }
+        });
     }
 
     private void updateStackSizeLabel() {

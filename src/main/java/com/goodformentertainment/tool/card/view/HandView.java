@@ -17,7 +17,7 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
-public class HandView implements View<Hand> {
+public class HandView extends View<Hand> {
     private static final Logger LOG = Logger.getLogger(HandView.class);
 
     private final CardImager imager;
@@ -34,11 +34,16 @@ public class HandView implements View<Hand> {
         hand.addObserver(this);
 
         pane = new FlowPane();
+        pane.getStyleClass().add("hand");
         pane.setOrientation(Orientation.HORIZONTAL);
         pane.setAlignment(Pos.CENTER);
         pane.setPadding(new Insets(10));
         pane.setHgap(5);
         pane.setVgap(5);
+
+        // 20 = 2 * Padding
+        pane.setMinHeight(CardView.MAX_CARD_SIZE + 20);
+        pane.setMinWidth(CardView.MAX_CARD_SIZE + 20);
 
         updateCards();
     }
@@ -87,9 +92,5 @@ public class HandView implements View<Hand> {
             pane.getChildren().add(view.getPane());
             views.add(view);
         }
-
-        // TODO
-        // LOG.info("Requesting layout update");
-        // pane.requestLayout();
     }
 }

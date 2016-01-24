@@ -3,8 +3,9 @@ package com.goodformentertainment.tool.card.model;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
 
-public class Game {
+public class Game extends Observable {
     private final List<Player> players;
     private final Table table;
 
@@ -18,6 +19,8 @@ public class Game {
             throw new IllegalArgumentException("The Player " + player + " already exists");
         } else {
             players.add(player);
+            setChanged();
+            notifyObservers(Observe.PLAYERS);
         }
     }
 
@@ -27,5 +30,9 @@ public class Game {
 
     public Table getTable() {
         return table;
+    }
+
+    public enum Observe {
+        PLAYERS
     }
 }

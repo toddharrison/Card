@@ -12,13 +12,16 @@ import com.goodformentertainment.tool.card.model.Meld;
 import com.goodformentertainment.tool.card.model.Placeable;
 import com.goodformentertainment.tool.card.model.Table;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
-public class MeldView implements View<Meld> {
+public class MeldView extends View<Meld> {
     private static final Logger LOG = Logger.getLogger(MeldView.class);
+
+    private static final String STYLE_MELD = "meld";
 
     private final CardImager imager;
     private final Stage stage;
@@ -34,10 +37,16 @@ public class MeldView implements View<Meld> {
         meld.addObserver(this);
 
         pane = new FlowPane();
+        pane.getStyleClass().add(STYLE_MELD);
         pane.setOrientation(Orientation.HORIZONTAL);
         pane.setAlignment(Pos.CENTER);
+        pane.setPadding(new Insets(10));
         pane.setHgap(5);
         pane.setVgap(5);
+
+        // 36 = 2 * Padding + 2 * BorderInset + 2 * BorderWidth
+        pane.setMinHeight(CardView.MAX_CARD_SIZE + 36);
+        pane.setMinWidth(CardView.MAX_CARD_SIZE + 36);
 
         updatePlaceables();
     }

@@ -17,7 +17,9 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
-public class CardView implements View<Card> {
+public class CardView extends View<Card> {
+    public static final int MAX_CARD_SIZE = 112;
+
     private static final Logger LOG = Logger.getLogger(CardView.class);
 
     private static final String STYLE_CARD = "card-small";
@@ -43,6 +45,11 @@ public class CardView implements View<Card> {
         view = new ImageView(imager.getEmptyImage(SIZE_SMALL));
         pane = new StackPane(view);
         pane.getStyleClass().add(STYLE_CARD);
+
+        pane.setMaxHeight(MAX_CARD_SIZE);
+        pane.setMaxWidth(MAX_CARD_SIZE);
+
+        addContextMenu();
     }
 
     @Override
@@ -86,7 +93,8 @@ public class CardView implements View<Card> {
                     setImageByCardFacing();
                     break;
                 case LOCATION:
-                    throw new UnsupportedOperationException();
+                    // Do nothing
+                    break;
             }
         }
     }
@@ -141,5 +149,27 @@ public class CardView implements View<Card> {
         });
 
         return popup;
+    }
+
+    private void addContextMenu() {
+        // final ContextMenu contextMenu = new ContextMenu();
+        // if (stack instanceof Deck) {
+        // final MenuItem draw = new MenuItem("Draw");
+        // contextMenu.getItems().addAll(draw);
+        // } else if (stack instanceof Discard) {
+        // final MenuItem take = new MenuItem("Take");
+        // contextMenu.getItems().addAll(take);
+        // } else {
+        // throw new UnsupportedOperationException(
+        // "Unknown CardStack type: " + stack.getClass().getName());
+        // }
+
+        pane.setOnMousePressed((event) -> {
+            if (event.isSecondaryButtonDown()) {
+                // contextMenu.show(pane, event.getScreenX(), event.getScreenY());
+                // event.consume();
+                LOG.info("Queried for menu");
+            }
+        });
     }
 }
