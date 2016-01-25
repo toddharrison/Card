@@ -8,8 +8,8 @@ import com.goodformentertainment.tool.card.model.Card;
 import com.goodformentertainment.tool.card.model.CardStack;
 import com.goodformentertainment.tool.card.model.Deck;
 import com.goodformentertainment.tool.card.model.Discard;
-import com.goodformentertainment.tool.card.model.event.ChangeLengthEvent;
 import com.goodformentertainment.tool.card.model.event.ChangeFirstCardEvent;
+import com.goodformentertainment.tool.card.model.event.ChangeLengthEvent;
 import com.goodformentertainment.tool.event.HandleEvent;
 
 import javafx.scene.control.ContextMenu;
@@ -35,6 +35,7 @@ public class StackView extends View<CardStack> {
         cardView.setParent(this);
         stackSize = new Label();
         stackSize.getStyleClass().add(STYLE_STACK_SIZE);
+        stackSize.setMouseTransparent(true);
 
         pane = new StackPane();
         pane.getChildren().add(cardView.getPane());
