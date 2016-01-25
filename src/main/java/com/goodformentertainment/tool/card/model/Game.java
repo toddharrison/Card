@@ -3,9 +3,11 @@ package com.goodformentertainment.tool.card.model;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Observable;
 
-public class Game extends Observable {
+import com.goodformentertainment.tool.card.model.event.NewPlayerEvent;
+import com.goodformentertainment.tool.event.EventDispatcher;
+
+public class Game extends EventDispatcher {
     private final List<Player> players;
     private final Table table;
 
@@ -19,8 +21,7 @@ public class Game extends Observable {
             throw new IllegalArgumentException("The Player " + player + " already exists");
         } else {
             players.add(player);
-            setChanged();
-            notifyObservers(Observe.PLAYERS);
+            dispatch(new NewPlayerEvent());
         }
     }
 
@@ -30,9 +31,5 @@ public class Game extends Observable {
 
     public Table getTable() {
         return table;
-    }
-
-    public enum Observe {
-        PLAYERS
     }
 }

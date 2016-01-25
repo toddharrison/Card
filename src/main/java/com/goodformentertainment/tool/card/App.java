@@ -53,6 +53,12 @@ public class App extends Application {
 
         deck.shuffle();
 
+        final Card card = deck.take().get();
+        discard.add(card);
+        LOG.info(card);
+        LOG.info(deck.getCards());
+        LOG.info(discard.getCards());
+
         toddPlayer.getHand().draw(deck, 3);
         toryPlayer.getHand().draw(deck, 3);
         toddPlayer.getHand().setFaceUp(false);

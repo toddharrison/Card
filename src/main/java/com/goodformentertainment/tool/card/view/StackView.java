@@ -1,16 +1,16 @@
 package com.goodformentertainment.tool.card.view;
 
-import java.util.Observable;
 import java.util.Optional;
 
 import org.apache.log4j.Logger;
 
 import com.goodformentertainment.tool.card.model.Card;
-import com.goodformentertainment.tool.card.model.CardList;
 import com.goodformentertainment.tool.card.model.CardStack;
 import com.goodformentertainment.tool.card.model.Deck;
 import com.goodformentertainment.tool.card.model.Discard;
-import com.goodformentertainment.tool.card.model.Placeable;
+import com.goodformentertainment.tool.card.model.event.LengthChangeEvent;
+import com.goodformentertainment.tool.card.model.event.TopChangeEvent;
+import com.goodformentertainment.tool.event.HandleEvent;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -30,8 +30,9 @@ public class StackView extends View<CardStack> {
 
     public StackView(final CardImager imager, final Stage stage, final CardStack stack) {
         this.stack = stack;
-        stack.addObserver(this);
+        stack.register(this);
         cardView = new CardView(imager, stage);
+        cardView.setParent(this);
         stackSize = new Label();
         stackSize.getStyleClass().add(STYLE_STACK_SIZE);
 
@@ -55,30 +56,14 @@ public class StackView extends View<CardStack> {
         return pane;
     }
 
-    @Override
-    public void update(final Observable o, final Object arg) {
-        LOG.debug("update: " + arg);
-        if (arg instanceof Placeable.Observe) {
-            switch ((Placeable.Observe) arg) {
-                case FACING:
-                    // Do nothing
-                    break;
-                case LOCATION:
-                    throw new UnsupportedOperationException();
-            }
-        } else if (arg instanceof CardList.Observe) {
-            switch ((CardList.Observe) arg) {
-                case LENGTH:
-                    updateStackSizeLabel();
-                    break;
-                case ORDER:
-                    // Do nothing
-                    break;
-                case TOP:
-                    updateCardView();
-                    break;
-            }
-        }
+    @HandleEvent(type = LengthChangeEvent.class)
+    public void on(final LengthChangeEvent event) {
+        updateStackSizeLabel();
+    }
+
+    @HandleEvent(type = TopChangeEvent.class)
+    public void on(final TopChangeEvent event) {
+        updateCardView();
     }
 
     private void addContextMenu() {

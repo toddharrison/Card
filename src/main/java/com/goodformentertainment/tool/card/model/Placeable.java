@@ -1,9 +1,12 @@
 package com.goodformentertainment.tool.card.model;
 
-import java.util.Observable;
 import java.util.Optional;
 
-public abstract class Placeable extends Observable {
+import com.goodformentertainment.tool.card.model.event.ChangeFacingEvent;
+import com.goodformentertainment.tool.card.model.event.ChangeLocationEvent;
+import com.goodformentertainment.tool.event.EventDispatcher;
+
+public abstract class Placeable extends EventDispatcher {
     protected boolean faceUp = true;
     protected Optional<Location> location;
 
@@ -26,8 +29,7 @@ public abstract class Placeable extends Observable {
     public void setFaceUp(final boolean faceUp) {
         if (this.faceUp != faceUp) {
             this.faceUp = faceUp;
-            setChanged();
-            notifyObservers(Observe.FACING);
+            dispatch(new ChangeFacingEvent());
         }
     }
 
@@ -56,8 +58,7 @@ public abstract class Placeable extends Observable {
      */
     public void place(final Location location) {
         this.location = Optional.of(location);
-        setChanged();
-        notifyObservers(Observe.LOCATION);
+        dispatch(new ChangeLocationEvent());
     }
 
     /**
@@ -66,12 +67,7 @@ public abstract class Placeable extends Observable {
     public void pickup() {
         if (location.isPresent()) {
             location = Optional.empty();
-            setChanged();
-            notifyObservers(Observe.LOCATION);
+            dispatch(new ChangeLocationEvent());
         }
-    }
-
-    public enum Observe {
-        FACING, LOCATION
     }
 }

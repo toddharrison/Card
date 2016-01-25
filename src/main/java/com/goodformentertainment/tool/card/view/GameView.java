@@ -1,13 +1,16 @@
 package com.goodformentertainment.tool.card.view;
 
 import java.util.Iterator;
-import java.util.Observable;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import com.goodformentertainment.tool.card.model.Game;
 import com.goodformentertainment.tool.card.model.Player;
+import com.goodformentertainment.tool.card.model.event.NewPlayerEvent;
 import com.goodformentertainment.tool.card.view.TableView.Position;
+import com.goodformentertainment.tool.event.HandleEvent;
 
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -23,11 +26,13 @@ public class GameView extends View<Game> {
     private final Game game;
     private final BorderPane pane;
     private final TableView tableView;
+    private final List<HandView> views;
 
     public GameView(final CardImager imager, final Stage stage, final Game game) {
         this.imager = imager;
         this.stage = stage;
         this.game = game;
+        views = new LinkedList<>();
 
         tableView = new TableView(imager, stage, game.getTable());
         tableView.setParent(this);
@@ -49,19 +54,17 @@ public class GameView extends View<Game> {
         return pane;
     }
 
-    @Override
-    public void update(final Observable o, final Object arg) {
-        LOG.debug("update: " + arg);
-        if (arg instanceof Game.Observe) {
-            switch ((Game.Observe) arg) {
-                case PLAYERS:
-                    updatePlayers();
-                    break;
-            }
-        }
+    @HandleEvent(type = NewPlayerEvent.class)
+    public void on(final NewPlayerEvent event) {
+        updatePlayers();
     }
 
     private void updatePlayers() {
+        for (final View<?> view : views) {
+            view.removeParent();
+        }
+        views.clear();
+
         final Iterator<Position> positions = TableView.Position.iterator();
         for (final Player player : game.getPlayers()) {
             final HandView handView = new HandView(imager, stage, player.getHand());
@@ -80,6 +83,8 @@ public class GameView extends View<Game> {
                     pane.setLeft(handView.getPane());
                     break;
             }
+            handView.setParent(this);
+            views.add(handView);
             tableView.setMeld(player.getMeld(), position);
         }
     }

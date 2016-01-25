@@ -3,9 +3,11 @@ package com.goodformentertainment.tool.card.model;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Observable;
 
-public class Table extends Observable {
+import com.goodformentertainment.tool.card.model.event.LengthChangeEvent;
+import com.goodformentertainment.tool.event.EventDispatcher;
+
+public class Table extends EventDispatcher {
     private final List<Placeable> placeables;
 
     public Table() {
@@ -29,8 +31,7 @@ public class Table extends Observable {
     public void place(final Placeable placeable) {
         placeables.add(placeable);
         placeable.place(new Location(this, null));
-        setChanged();
-        notifyObservers(Observe.LENGTH);
+        dispatch(new LengthChangeEvent());
     }
 
     public void place(final List<? extends Placeable> placeables) {
@@ -38,8 +39,7 @@ public class Table extends Observable {
             this.placeables.add(placeable);
             placeable.place(new Location(this, null));
         }
-        setChanged();
-        notifyObservers(Observe.LENGTH);
+        dispatch(new LengthChangeEvent());
     }
 
     public boolean has(final Placeable placeable) {
@@ -55,15 +55,10 @@ public class Table extends Observable {
     public Placeable pickup(final Placeable placeable) {
         if (placeables.remove(placeable)) {
             placeable.pickup();
-            setChanged();
-            notifyObservers(Observe.LENGTH);
+            dispatch(new LengthChangeEvent());
             return placeable;
         } else {
             throw new IllegalArgumentException("That Placeable is not on this Table");
         }
-    }
-
-    public enum Observe {
-        LENGTH
     }
 }

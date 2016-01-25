@@ -1,12 +1,12 @@
 package com.goodformentertainment.tool.card.view;
 
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Optional;
+
+import com.goodformentertainment.tool.event.EventListener;
 
 import javafx.scene.layout.Pane;
 
-public abstract class View<T extends Observable> implements Observer {
+public abstract class View<T> implements EventListener {
     private Optional<View<?>> parent;
 
     public abstract T getModel();

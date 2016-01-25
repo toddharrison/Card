@@ -2,14 +2,14 @@ package com.goodformentertainment.tool.card.view;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Observable;
 
 import org.apache.log4j.Logger;
 
 import com.goodformentertainment.tool.card.model.Card;
-import com.goodformentertainment.tool.card.model.CardList;
 import com.goodformentertainment.tool.card.model.Hand;
-import com.goodformentertainment.tool.card.model.Placeable;
+import com.goodformentertainment.tool.card.model.event.LengthChangeEvent;
+import com.goodformentertainment.tool.card.model.event.OrderChangeEvent;
+import com.goodformentertainment.tool.event.HandleEvent;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -31,7 +31,7 @@ public class HandView extends View<Hand> {
         this.stage = stage;
         this.hand = hand;
         views = new LinkedList<>();
-        hand.addObserver(this);
+        hand.register(this);
 
         pane = new FlowPane();
         pane.getStyleClass().add("hand");
@@ -58,36 +58,26 @@ public class HandView extends View<Hand> {
         return pane;
     }
 
-    @Override
-    public void update(final Observable o, final Object arg) {
-        LOG.debug("update: " + arg);
-        if (arg instanceof Placeable.Observe) {
-            switch ((Placeable.Observe) arg) {
-                case FACING:
-                    // Do nothing
-                    break;
-                case LOCATION:
-                    throw new UnsupportedOperationException();
-            }
-        } else if (arg instanceof CardList.Observe) {
-            switch ((CardList.Observe) arg) {
-                case LENGTH:
-                case ORDER:
-                    updateCards();
-                    break;
-                case TOP:
-                    // Do nothing
-                    break;
-            }
-        }
+    @HandleEvent(type = LengthChangeEvent.class)
+    public void on(final LengthChangeEvent event) {
+        updateCards();
+    }
+
+    @HandleEvent(type = OrderChangeEvent.class)
+    public void on(final OrderChangeEvent event) {
+        updateCards();
     }
 
     private void updateCards() {
         pane.getChildren().clear();
+        for (final View<?> view : views) {
+            view.removeParent();
+        }
         views.clear();
 
         for (final Card card : hand.getCards()) {
             final CardView view = new CardView(imager, stage);
+            view.setParent(this);
             view.setCard(card);
             pane.getChildren().add(view.getPane());
             views.add(view);

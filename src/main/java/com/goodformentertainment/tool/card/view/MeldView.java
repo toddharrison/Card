@@ -2,7 +2,6 @@ package com.goodformentertainment.tool.card.view;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Observable;
 
 import org.apache.log4j.Logger;
 
@@ -10,7 +9,8 @@ import com.goodformentertainment.tool.card.model.Card;
 import com.goodformentertainment.tool.card.model.CardStack;
 import com.goodformentertainment.tool.card.model.Meld;
 import com.goodformentertainment.tool.card.model.Placeable;
-import com.goodformentertainment.tool.card.model.Table;
+import com.goodformentertainment.tool.card.model.event.LengthChangeEvent;
+import com.goodformentertainment.tool.event.HandleEvent;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -34,7 +34,7 @@ public class MeldView extends View<Meld> {
         this.stage = stage;
         this.meld = meld;
         views = new LinkedList<>();
-        meld.addObserver(this);
+        meld.register(this);
 
         pane = new FlowPane();
         pane.getStyleClass().add(STYLE_MELD);
@@ -61,32 +61,30 @@ public class MeldView extends View<Meld> {
         return pane;
     }
 
-    @Override
-    public void update(final Observable o, final Object arg) {
-        LOG.debug("update: " + arg);
-        if (arg instanceof Table.Observe) {
-            switch ((Table.Observe) arg) {
-                case LENGTH:
-                    updatePlaceables();
-                    break;
-            }
-        }
+    @HandleEvent(type = LengthChangeEvent.class)
+    public void on(final LengthChangeEvent event) {
+        updatePlaceables();
     }
 
     private void updatePlaceables() {
         pane.getChildren().clear();
+        for (final View<?> view : views) {
+            view.removeParent();
+        }
         views.clear();
 
         for (final Placeable placeable : meld.getPlaceables()) {
             if (placeable instanceof Card) {
                 final Card card = (Card) placeable;
                 final CardView view = new CardView(imager, stage);
+                view.setParent(this);
                 view.setCard(card);
                 pane.getChildren().add(view.getPane());
                 views.add(view);
             } else if (placeable instanceof CardStack) {
                 final CardStack stack = (CardStack) placeable;
                 final StackView view = new StackView(imager, stage, stack);
+                view.setParent(this);
                 pane.getChildren().add(view.getPane());
                 views.add(view);
             }

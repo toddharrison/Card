@@ -1,11 +1,10 @@
 package com.goodformentertainment.tool.card.view;
 
-import java.util.Observable;
-
 import org.apache.log4j.Logger;
 
 import com.goodformentertainment.tool.card.model.Card;
-import com.goodformentertainment.tool.card.model.Placeable;
+import com.goodformentertainment.tool.card.model.event.ChangeFacingEvent;
+import com.goodformentertainment.tool.event.HandleEvent;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.Tooltip;
@@ -65,13 +64,13 @@ public class CardView extends View<Card> {
     public void setCard(final Card card) {
         this.card = card;
         setImageByCardFacing();
-        card.addObserver(this);
+        card.register(this);
     }
 
     public void removeCard() {
         if (card != null) {
             view.setImage(imager.getEmptyImage(SIZE_SMALL));
-            card.deleteObserver(this);
+            card.unregister(this);
             card = null;
 
             if (onClickHandler != null) {
@@ -84,19 +83,9 @@ public class CardView extends View<Card> {
         }
     }
 
-    @Override
-    public void update(final Observable o, final Object arg) {
-        LOG.debug("update: " + arg);
-        if (arg instanceof Placeable.Observe) {
-            switch ((Placeable.Observe) arg) {
-                case FACING:
-                    setImageByCardFacing();
-                    break;
-                case LOCATION:
-                    // Do nothing
-                    break;
-            }
-        }
+    @HandleEvent(type = ChangeFacingEvent.class)
+    public void on(final ChangeFacingEvent event) {
+        setImageByCardFacing();
     }
 
     private void setImageByCardFacing() {

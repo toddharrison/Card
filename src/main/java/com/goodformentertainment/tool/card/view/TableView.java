@@ -1,10 +1,11 @@
 package com.goodformentertainment.tool.card.view;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Observable;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -13,6 +14,8 @@ import com.goodformentertainment.tool.card.model.CardStack;
 import com.goodformentertainment.tool.card.model.Meld;
 import com.goodformentertainment.tool.card.model.Placeable;
 import com.goodformentertainment.tool.card.model.Table;
+import com.goodformentertainment.tool.card.model.event.LengthChangeEvent;
+import com.goodformentertainment.tool.event.HandleEvent;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -30,14 +33,16 @@ public class TableView extends View<Table> {
     private final Table table;
     private final BorderPane pane;
     private final FlowPane centerPane;
-    private final List<View<?>> views;
+    private final List<View<?>> handViews;
+    private final Map<Position, MeldView> meldViews;
 
     public TableView(final CardImager imager, final Stage stage, final Table table) {
         this.imager = imager;
         this.stage = stage;
         this.table = table;
-        views = new LinkedList<>();
-        table.addObserver(this);
+        handViews = new LinkedList<>();
+        meldViews = new HashMap<>();
+        table.register(this);
 
         centerPane = new FlowPane();
         centerPane.setOrientation(Orientation.HORIZONTAL);
@@ -65,16 +70,9 @@ public class TableView extends View<Table> {
         return pane;
     }
 
-    @Override
-    public void update(final Observable o, final Object arg) {
-        LOG.debug("update: " + arg);
-        if (arg instanceof Table.Observe) {
-            switch ((Table.Observe) arg) {
-                case LENGTH:
-                    updatePlaceables();
-                    break;
-            }
-        }
+    @HandleEvent(type = LengthChangeEvent.class)
+    public void on(final LengthChangeEvent event) {
+        updatePlaceables();
     }
 
     public void setMeld(final Meld meld, final Position position) {
@@ -93,24 +91,35 @@ public class TableView extends View<Table> {
                 pane.setLeft(meldView.getPane());
                 break;
         }
+
+        if (meldViews.containsKey(position)) {
+            meldViews.get(position).removeParent();
+            meldViews.put(position, meldView);
+        }
+        meldView.setParent(this);
     }
 
     private void updatePlaceables() {
         centerPane.getChildren().clear();
-        views.clear();
+        for (final View<?> view : handViews) {
+            view.removeParent();
+        }
+        handViews.clear();
 
         for (final Placeable placeable : table.getPlaceables()) {
             if (placeable instanceof Card) {
                 final Card card = (Card) placeable;
                 final CardView view = new CardView(imager, stage);
+                view.setParent(this);
                 view.setCard(card);
                 centerPane.getChildren().add(view.getPane());
-                views.add(view);
+                handViews.add(view);
             } else if (placeable instanceof CardStack) {
                 final CardStack stack = (CardStack) placeable;
                 final StackView view = new StackView(imager, stage, stack);
+                view.setParent(this);
                 centerPane.getChildren().add(view.getPane());
-                views.add(view);
+                handViews.add(view);
             }
         }
     }
