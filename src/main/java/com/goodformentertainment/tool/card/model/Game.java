@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.goodformentertainment.tool.card.model.event.NewPlayerEvent;
+import com.goodformentertainment.tool.card.model.event.AddPlayerEvent;
 import com.goodformentertainment.tool.event.EventDispatcher;
 
 public class Game extends EventDispatcher {
@@ -21,7 +21,7 @@ public class Game extends EventDispatcher {
             throw new IllegalArgumentException("The Player " + player + " already exists");
         } else {
             players.add(player);
-            dispatch(new NewPlayerEvent());
+            dispatch(new AddPlayerEvent());
         }
     }
 

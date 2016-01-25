@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.goodformentertainment.tool.card.model.event.LengthChangeEvent;
+import com.goodformentertainment.tool.card.model.event.ChangeLengthEvent;
 import com.goodformentertainment.tool.event.EventDispatcher;
 
 public class Table extends EventDispatcher {
@@ -31,7 +31,7 @@ public class Table extends EventDispatcher {
     public void place(final Placeable placeable) {
         placeables.add(placeable);
         placeable.place(new Location(this, null));
-        dispatch(new LengthChangeEvent());
+        dispatch(new ChangeLengthEvent());
     }
 
     public void place(final List<? extends Placeable> placeables) {
@@ -39,7 +39,7 @@ public class Table extends EventDispatcher {
             this.placeables.add(placeable);
             placeable.place(new Location(this, null));
         }
-        dispatch(new LengthChangeEvent());
+        dispatch(new ChangeLengthEvent());
     }
 
     public boolean has(final Placeable placeable) {
@@ -55,7 +55,7 @@ public class Table extends EventDispatcher {
     public Placeable pickup(final Placeable placeable) {
         if (placeables.remove(placeable)) {
             placeable.pickup();
-            dispatch(new LengthChangeEvent());
+            dispatch(new ChangeLengthEvent());
             return placeable;
         } else {
             throw new IllegalArgumentException("That Placeable is not on this Table");

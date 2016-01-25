@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.goodformentertainment.tool.card.model.Game;
 import com.goodformentertainment.tool.card.model.Player;
-import com.goodformentertainment.tool.card.model.event.NewPlayerEvent;
+import com.goodformentertainment.tool.card.model.event.AddPlayerEvent;
 import com.goodformentertainment.tool.card.view.TableView.Position;
 import com.goodformentertainment.tool.event.HandleEvent;
 
@@ -54,8 +54,8 @@ public class GameView extends View<Game> {
         return pane;
     }
 
-    @HandleEvent(type = NewPlayerEvent.class)
-    public void on(final NewPlayerEvent event) {
+    @HandleEvent(type = AddPlayerEvent.class)
+    public void on(final AddPlayerEvent event) {
         updatePlayers();
     }
 

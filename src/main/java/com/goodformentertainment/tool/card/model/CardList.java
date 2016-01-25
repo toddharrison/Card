@@ -8,9 +8,9 @@ import java.util.ListIterator;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.goodformentertainment.tool.card.model.event.LengthChangeEvent;
-import com.goodformentertainment.tool.card.model.event.OrderChangeEvent;
-import com.goodformentertainment.tool.card.model.event.TopChangeEvent;
+import com.goodformentertainment.tool.card.model.event.ChangeLengthEvent;
+import com.goodformentertainment.tool.card.model.event.ChangeOrderEvent;
+import com.goodformentertainment.tool.card.model.event.ChangeFirstCardEvent;
 
 /**
  * Represents an ordered List of Cards with a start and an end.
@@ -52,7 +52,10 @@ public abstract class CardList extends Placeable {
     public void add(final Card card) {
         card.setFaceUp(isFaceUp());
         cards.add(card);
-        dispatch(new LengthChangeEvent());
+        dispatch(new ChangeLengthEvent());
+        if (cards.size() == 1) {
+            dispatch(new ChangeFirstCardEvent());
+        }
     }
 
     /**
@@ -66,7 +69,10 @@ public abstract class CardList extends Placeable {
                 card.setFaceUp(isFaceUp());
                 this.cards.add(card);
             }
-            dispatch(new LengthChangeEvent());
+            dispatch(new ChangeLengthEvent());
+            if (this.cards.size() == cards.size()) {
+                dispatch(new ChangeFirstCardEvent());
+            }
         }
     }
 
@@ -80,7 +86,10 @@ public abstract class CardList extends Placeable {
             card.setFaceUp(isFaceUp());
             this.cards.add(card);
         }
-        dispatch(new LengthChangeEvent());
+        dispatch(new ChangeLengthEvent());
+        if (this.cards.size() == cards.length) {
+            dispatch(new ChangeFirstCardEvent());
+        }
     }
 
     /**
@@ -91,8 +100,8 @@ public abstract class CardList extends Placeable {
     public void addToTop(final Card card) {
         card.setFaceUp(isFaceUp());
         cards.push(card);
-        dispatch(new LengthChangeEvent());
-        dispatch(new TopChangeEvent());
+        dispatch(new ChangeLengthEvent());
+        dispatch(new ChangeFirstCardEvent());
     }
 
     /**
@@ -108,8 +117,8 @@ public abstract class CardList extends Placeable {
             card.setFaceUp(isFaceUp());
             this.cards.push(card);
         }
-        dispatch(new LengthChangeEvent());
-        dispatch(new TopChangeEvent());
+        dispatch(new ChangeLengthEvent());
+        dispatch(new ChangeFirstCardEvent());
     }
 
     /**
@@ -119,8 +128,8 @@ public abstract class CardList extends Placeable {
      */
     public Optional<Card> take() {
         final Card card = cards.removeFirst();
-        dispatch(new LengthChangeEvent());
-        dispatch(new TopChangeEvent());
+        dispatch(new ChangeLengthEvent());
+        dispatch(new ChangeFirstCardEvent());
         return Optional.ofNullable(card);
     }
 
@@ -135,8 +144,8 @@ public abstract class CardList extends Placeable {
         while (!cards.isEmpty() && takenCards.size() < count) {
             takenCards.add(cards.removeFirst());
         }
-        dispatch(new LengthChangeEvent());
-        dispatch(new TopChangeEvent());
+        dispatch(new ChangeLengthEvent());
+        dispatch(new ChangeFirstCardEvent());
         return takenCards;
     }
 
@@ -148,8 +157,8 @@ public abstract class CardList extends Placeable {
      */
     public Card take(final Card card) {
         if (cards.remove(card)) {
-            dispatch(new LengthChangeEvent());
-            dispatch(new TopChangeEvent());
+            dispatch(new ChangeLengthEvent());
+            dispatch(new ChangeFirstCardEvent());
             return card;
         } else {
             throw new IllegalArgumentException("That Card is not in this List");
@@ -164,8 +173,8 @@ public abstract class CardList extends Placeable {
     public List<Card> takeAll() {
         final List<Card> removedCards = new LinkedList<>(cards);
         cards.clear();
-        dispatch(new LengthChangeEvent());
-        dispatch(new TopChangeEvent());
+        dispatch(new ChangeLengthEvent());
+        dispatch(new ChangeFirstCardEvent());
         return removedCards;
     }
 
@@ -179,9 +188,9 @@ public abstract class CardList extends Placeable {
         if (cards.size() > 0) {
             final int index = ThreadLocalRandom.current().nextInt(cards.size());
             card = cards.remove(index);
-            dispatch(new LengthChangeEvent());
+            dispatch(new ChangeLengthEvent());
             if (index == 0) {
-                dispatch(new TopChangeEvent());
+                dispatch(new ChangeFirstCardEvent());
             }
         }
         return Optional.ofNullable(card);
@@ -203,9 +212,9 @@ public abstract class CardList extends Placeable {
                 removedFirst = true;
             }
         }
-        dispatch(new LengthChangeEvent());
+        dispatch(new ChangeLengthEvent());
         if (removedFirst) {
-            dispatch(new TopChangeEvent());
+            dispatch(new ChangeFirstCardEvent());
         }
         return takenCards;
     }
@@ -228,8 +237,8 @@ public abstract class CardList extends Placeable {
      */
     public void shuffle() {
         Collections.shuffle(cards);
-        dispatch(new TopChangeEvent());
-        dispatch(new OrderChangeEvent());
+        dispatch(new ChangeFirstCardEvent());
+        dispatch(new ChangeOrderEvent());
     }
 
     /**
@@ -239,8 +248,8 @@ public abstract class CardList extends Placeable {
      */
     public void sort(final Comparator<Card> comparator) {
         cards.sort(comparator);
-        dispatch(new TopChangeEvent());
-        dispatch(new OrderChangeEvent());
+        dispatch(new ChangeFirstCardEvent());
+        dispatch(new ChangeOrderEvent());
     }
 
     /**
@@ -248,8 +257,8 @@ public abstract class CardList extends Placeable {
      */
     public void reverse() {
         Collections.reverse(cards);
-        dispatch(new TopChangeEvent());
-        dispatch(new OrderChangeEvent());
+        dispatch(new ChangeFirstCardEvent());
+        dispatch(new ChangeOrderEvent());
     }
 
     /**

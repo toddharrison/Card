@@ -9,7 +9,7 @@ import com.goodformentertainment.tool.card.model.Card;
 import com.goodformentertainment.tool.card.model.CardStack;
 import com.goodformentertainment.tool.card.model.Meld;
 import com.goodformentertainment.tool.card.model.Placeable;
-import com.goodformentertainment.tool.card.model.event.LengthChangeEvent;
+import com.goodformentertainment.tool.card.model.event.ChangeLengthEvent;
 import com.goodformentertainment.tool.event.HandleEvent;
 
 import javafx.geometry.Insets;
@@ -61,8 +61,8 @@ public class MeldView extends View<Meld> {
         return pane;
     }
 
-    @HandleEvent(type = LengthChangeEvent.class)
-    public void on(final LengthChangeEvent event) {
+    @HandleEvent(type = ChangeLengthEvent.class)
+    public void on(final ChangeLengthEvent event) {
         updatePlaceables();
     }
 

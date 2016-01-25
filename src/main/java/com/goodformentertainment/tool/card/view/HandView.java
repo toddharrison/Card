@@ -7,8 +7,8 @@ import org.apache.log4j.Logger;
 
 import com.goodformentertainment.tool.card.model.Card;
 import com.goodformentertainment.tool.card.model.Hand;
-import com.goodformentertainment.tool.card.model.event.LengthChangeEvent;
-import com.goodformentertainment.tool.card.model.event.OrderChangeEvent;
+import com.goodformentertainment.tool.card.model.event.ChangeLengthEvent;
+import com.goodformentertainment.tool.card.model.event.ChangeOrderEvent;
 import com.goodformentertainment.tool.event.HandleEvent;
 
 import javafx.geometry.Insets;
@@ -58,13 +58,13 @@ public class HandView extends View<Hand> {
         return pane;
     }
 
-    @HandleEvent(type = LengthChangeEvent.class)
-    public void on(final LengthChangeEvent event) {
+    @HandleEvent(type = ChangeLengthEvent.class)
+    public void on(final ChangeLengthEvent event) {
         updateCards();
     }
 
-    @HandleEvent(type = OrderChangeEvent.class)
-    public void on(final OrderChangeEvent event) {
+    @HandleEvent(type = ChangeOrderEvent.class)
+    public void on(final ChangeOrderEvent event) {
         updateCards();
     }
 
