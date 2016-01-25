@@ -13,7 +13,6 @@ import com.goodformentertainment.tool.card.view.TableView.Position;
 import com.goodformentertainment.tool.event.HandleEvent;
 
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class GameView extends View<Game> {
@@ -41,17 +40,13 @@ public class GameView extends View<Game> {
         pane.getStyleClass().add(STYLE_GAME);
         pane.setCenter(tableView.getPane());
 
+        setPane(pane);
         updatePlayers();
     }
 
     @Override
     public Game getModel() {
         return game;
-    }
-
-    @Override
-    public Pane getPane() {
-        return pane;
     }
 
     @HandleEvent(type = AddPlayerEvent.class)

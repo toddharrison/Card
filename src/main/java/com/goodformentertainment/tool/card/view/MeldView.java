@@ -48,17 +48,13 @@ public class MeldView extends View<Meld> {
         pane.setMinHeight(CardView.MAX_CARD_SIZE + 36);
         pane.setMinWidth(CardView.MAX_CARD_SIZE + 36);
 
+        setPane(pane);
         updatePlaceables();
     }
 
     @Override
     public Meld getModel() {
         return meld;
-    }
-
-    @Override
-    public FlowPane getPane() {
-        return pane;
     }
 
     @HandleEvent(type = ChangeLengthEvent.class)

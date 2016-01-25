@@ -57,17 +57,13 @@ public class TableView extends View<Table> {
         pane.getStyleClass().add(STYLE_TABLE);
         BorderPane.setMargin(pane, new Insets(5));
 
+        setPane(pane);
         updatePlaceables();
     }
 
     @Override
     public Table getModel() {
         return table;
-    }
-
-    @Override
-    public BorderPane getPane() {
-        return pane;
     }
 
     @HandleEvent(type = ChangeLengthEvent.class)

@@ -60,17 +60,13 @@ public class HandView extends View<Hand> {
         GridPane.setHalignment(label, HPos.CENTER);
         GridPane.setHalignment(cardsPane, HPos.CENTER);
 
+        setPane(pane);
         updateCards();
     }
 
     @Override
     public Hand getModel() {
         return hand;
-    }
-
-    @Override
-    public GridPane getPane() {
-        return pane;
     }
 
     @HandleEvent(type = ChangeLengthEvent.class)

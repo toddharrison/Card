@@ -1,5 +1,8 @@
 package com.goodformentertainment.tool.card.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import com.goodformentertainment.tool.card.model.Card;
@@ -7,6 +10,7 @@ import com.goodformentertainment.tool.card.model.event.ChangeFacingEvent;
 import com.goodformentertainment.tool.event.HandleEvent;
 
 import javafx.event.EventHandler;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -48,12 +52,7 @@ public class CardView extends View<Card> {
         pane.setMaxHeight(MAX_CARD_SIZE);
         pane.setMaxWidth(MAX_CARD_SIZE);
 
-        addContextMenu();
-    }
-
-    @Override
-    public StackPane getPane() {
-        return pane;
+        setPane(pane);
     }
 
     @Override
@@ -86,6 +85,14 @@ public class CardView extends View<Card> {
     @HandleEvent(type = ChangeFacingEvent.class)
     public void on(final ChangeFacingEvent event) {
         setImageByCardFacing();
+    }
+
+    @Override
+    public List<MenuItem> getViewMenuItems() {
+        final List<MenuItem> menuItems = new ArrayList<>();
+        final MenuItem discard = new MenuItem("Discard");
+        menuItems.add(discard);
+        return menuItems;
     }
 
     private void setImageByCardFacing() {
@@ -138,27 +145,5 @@ public class CardView extends View<Card> {
         });
 
         return popup;
-    }
-
-    private void addContextMenu() {
-        // final ContextMenu contextMenu = new ContextMenu();
-        // if (stack instanceof Deck) {
-        // final MenuItem draw = new MenuItem("Draw");
-        // contextMenu.getItems().addAll(draw);
-        // } else if (stack instanceof Discard) {
-        // final MenuItem take = new MenuItem("Take");
-        // contextMenu.getItems().addAll(take);
-        // } else {
-        // throw new UnsupportedOperationException(
-        // "Unknown CardStack type: " + stack.getClass().getName());
-        // }
-
-        pane.setOnMousePressed((event) -> {
-            if (event.isSecondaryButtonDown()) {
-                // contextMenu.show(pane, event.getScreenX(), event.getScreenY());
-                // event.consume();
-                LOG.info("Queried for menu");
-            }
-        });
     }
 }

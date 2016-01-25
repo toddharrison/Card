@@ -1,5 +1,7 @@
 package com.goodformentertainment.tool.card.view;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.log4j.Logger;
@@ -12,7 +14,6 @@ import com.goodformentertainment.tool.card.model.event.ChangeFirstCardEvent;
 import com.goodformentertainment.tool.card.model.event.ChangeLengthEvent;
 import com.goodformentertainment.tool.event.HandleEvent;
 
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.StackPane;
@@ -41,8 +42,7 @@ public class StackView extends View<CardStack> {
         pane.getChildren().add(cardView.getPane());
         pane.getChildren().add(stackSize);
 
-        addContextMenu();
-
+        setPane(pane);
         updateStackSizeLabel();
         updateCardView();
     }
@@ -50,11 +50,6 @@ public class StackView extends View<CardStack> {
     @Override
     public CardStack getModel() {
         return stack;
-    }
-
-    @Override
-    public StackPane getPane() {
-        return pane;
     }
 
     @HandleEvent(type = ChangeLengthEvent.class)
@@ -67,26 +62,20 @@ public class StackView extends View<CardStack> {
         updateCardView();
     }
 
-    private void addContextMenu() {
-        final ContextMenu contextMenu = new ContextMenu();
+    @Override
+    public List<MenuItem> getViewMenuItems() {
+        final List<MenuItem> menuItems = new ArrayList<>();
         if (stack instanceof Deck) {
             final MenuItem draw = new MenuItem("Draw");
-            contextMenu.getItems().addAll(draw);
+            menuItems.add(draw);
         } else if (stack instanceof Discard) {
             final MenuItem take = new MenuItem("Take");
-            contextMenu.getItems().addAll(take);
+            menuItems.add(take);
         } else {
             throw new UnsupportedOperationException(
                     "Unknown CardStack type: " + stack.getClass().getName());
         }
-
-        pane.setOnMousePressed((event) -> {
-            if (event.isSecondaryButtonDown()) {
-                contextMenu.show(pane, event.getScreenX(), event.getScreenY());
-                // event.consume();
-                LOG.info("Queried for menu");
-            }
-        });
+        return menuItems;
     }
 
     private void updateStackSizeLabel() {
