@@ -8,9 +8,9 @@ import java.util.ListIterator;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.goodformentertainment.tool.card.model.event.ChangeFirstCardEvent;
 import com.goodformentertainment.tool.card.model.event.ChangeLengthEvent;
 import com.goodformentertainment.tool.card.model.event.ChangeOrderEvent;
-import com.goodformentertainment.tool.card.model.event.ChangeFirstCardEvent;
 
 /**
  * Represents an ordered List of Cards with a start and an end.
@@ -20,7 +20,8 @@ import com.goodformentertainment.tool.card.model.event.ChangeFirstCardEvent;
 public abstract class CardList extends Placeable {
     private final LinkedList<Card> cards;
 
-    public CardList() {
+    public CardList(final String name) {
+        super(name);
         cards = new LinkedList<>();
     }
 
@@ -35,9 +36,9 @@ public abstract class CardList extends Placeable {
     @Override
     public void place(final Location location) {
         super.place(location);
-        for (final Card card : cards) {
-            card.place(location);
-        }
+        // for (final Card card : cards) {
+        // card.place(location);
+        // }
     }
 
     public List<Card> getCards() {
@@ -52,6 +53,7 @@ public abstract class CardList extends Placeable {
     public void add(final Card card) {
         card.setFaceUp(isFaceUp());
         cards.add(card);
+        card.setList(this);
         dispatch(new ChangeLengthEvent());
         if (cards.size() == 1) {
             dispatch(new ChangeFirstCardEvent());
@@ -68,6 +70,7 @@ public abstract class CardList extends Placeable {
             for (final Card card : cards) {
                 card.setFaceUp(isFaceUp());
                 this.cards.add(card);
+                card.setList(this);
             }
             dispatch(new ChangeLengthEvent());
             if (this.cards.size() == cards.size()) {
@@ -85,6 +88,7 @@ public abstract class CardList extends Placeable {
         for (final Card card : cards) {
             card.setFaceUp(isFaceUp());
             this.cards.add(card);
+            card.setList(this);
         }
         dispatch(new ChangeLengthEvent());
         if (this.cards.size() == cards.length) {
@@ -100,6 +104,7 @@ public abstract class CardList extends Placeable {
     public void addToTop(final Card card) {
         card.setFaceUp(isFaceUp());
         cards.push(card);
+        card.setList(this);
         dispatch(new ChangeLengthEvent());
         dispatch(new ChangeFirstCardEvent());
     }
@@ -116,6 +121,7 @@ public abstract class CardList extends Placeable {
             final Card card = iterator.previous();
             card.setFaceUp(isFaceUp());
             this.cards.push(card);
+            card.setList(this);
         }
         dispatch(new ChangeLengthEvent());
         dispatch(new ChangeFirstCardEvent());
@@ -127,9 +133,13 @@ public abstract class CardList extends Placeable {
      * @return
      */
     public Optional<Card> take() {
-        final Card card = cards.removeFirst();
-        dispatch(new ChangeLengthEvent());
-        dispatch(new ChangeFirstCardEvent());
+        Card card = null;
+        if (!cards.isEmpty()) {
+            card = cards.removeFirst();
+            card.setList(null);
+            dispatch(new ChangeLengthEvent());
+            dispatch(new ChangeFirstCardEvent());
+        }
         return Optional.ofNullable(card);
     }
 
@@ -142,7 +152,9 @@ public abstract class CardList extends Placeable {
     public List<Card> take(final int count) {
         final List<Card> takenCards = new LinkedList<>();
         while (!cards.isEmpty() && takenCards.size() < count) {
-            takenCards.add(cards.removeFirst());
+            final Card card = cards.removeFirst();
+            takenCards.add(card);
+            card.setList(null);
         }
         dispatch(new ChangeLengthEvent());
         dispatch(new ChangeFirstCardEvent());
@@ -157,6 +169,7 @@ public abstract class CardList extends Placeable {
      */
     public Card take(final Card card) {
         if (cards.remove(card)) {
+            card.setList(null);
             dispatch(new ChangeLengthEvent());
             dispatch(new ChangeFirstCardEvent());
             return card;
@@ -173,6 +186,9 @@ public abstract class CardList extends Placeable {
     public List<Card> takeAll() {
         final List<Card> removedCards = new LinkedList<>(cards);
         cards.clear();
+        for (final Card card : removedCards) {
+            card.setList(null);
+        }
         dispatch(new ChangeLengthEvent());
         dispatch(new ChangeFirstCardEvent());
         return removedCards;
@@ -188,6 +204,7 @@ public abstract class CardList extends Placeable {
         if (cards.size() > 0) {
             final int index = ThreadLocalRandom.current().nextInt(cards.size());
             card = cards.remove(index);
+            card.setList(null);
             dispatch(new ChangeLengthEvent());
             if (index == 0) {
                 dispatch(new ChangeFirstCardEvent());
@@ -207,7 +224,9 @@ public abstract class CardList extends Placeable {
         boolean removedFirst = false;
         while (!cards.isEmpty() && takenCards.size() < count) {
             final int index = ThreadLocalRandom.current().nextInt(cards.size());
-            takenCards.add(cards.remove(index));
+            final Card card = cards.remove(index);
+            takenCards.add(card);
+            card.setList(null);
             if (index == 0) {
                 removedFirst = true;
             }

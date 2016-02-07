@@ -1,15 +1,16 @@
 package com.goodformentertainment.tool.card.view;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 import org.apache.log4j.Logger;
 
 import com.goodformentertainment.tool.card.model.Card;
+import com.goodformentertainment.tool.card.model.Context;
 import com.goodformentertainment.tool.card.model.event.ChangeFacingEvent;
 import com.goodformentertainment.tool.event.HandleEvent;
 
 import javafx.event.EventHandler;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -42,7 +43,8 @@ public class CardView extends View<Card> {
     private EventHandler<MouseEvent> onClickHandler;
     private Tooltip tooltip;
 
-    public CardView(final CardImager imager, final Stage stage) {
+    public CardView(final Context context, final CardImager imager, final Stage stage) {
+        super(context);
         this.imager = imager;
         this.stage = stage;
         view = new ImageView(imager.getEmptyImage(SIZE_SMALL));
@@ -64,6 +66,7 @@ public class CardView extends View<Card> {
         this.card = card;
         setImageByCardFacing();
         card.register(this);
+        updateContextMenu();
     }
 
     public void removeCard() {
@@ -71,6 +74,8 @@ public class CardView extends View<Card> {
             view.setImage(imager.getEmptyImage(SIZE_SMALL));
             card.unregister(this);
             card = null;
+
+            updateContextMenu();
 
             if (onClickHandler != null) {
                 pane.removeEventHandler(MouseEvent.MOUSE_CLICKED, onClickHandler);
@@ -88,11 +93,35 @@ public class CardView extends View<Card> {
     }
 
     @Override
-    public List<MenuItem> getViewMenuItems() {
-        final List<MenuItem> menuItems = new ArrayList<>();
-        final MenuItem discard = new MenuItem("Discard");
-        menuItems.add(discard);
-        return menuItems;
+    public Optional<Menu> getViewMenuItems() {
+        Menu menu = null;
+
+        if (card != null) {
+            menu = new Menu("Card");
+
+            final Menu meld = new Menu("Meld to");
+            context.getMelds().forEach((target) -> {
+                final MenuItem menuItem = new MenuItem(target.getPlayer().getName() + "'s Meld");
+                menuItem.setOnAction((event) -> {
+                    card.take();
+                    target.place(card);
+                });
+            });
+            menu.getItems().add(meld);
+
+            final Menu discard = new Menu("Discard to");
+            context.getDiscards().forEach((target) -> {
+                final MenuItem menuItem = new MenuItem(target.getName());
+                menuItem.setOnAction((event) -> {
+                    card.take();
+                    target.addToTop(card);
+                });
+                discard.getItems().add(menuItem);
+            });
+            menu.getItems().add(discard);
+        }
+
+        return Optional.ofNullable(menu);
     }
 
     private void setImageByCardFacing() {
@@ -129,7 +158,7 @@ public class CardView extends View<Card> {
         }
     }
 
-    public Popup createPopup(final String name) {
+    private Popup createPopup(final String name) {
         final Popup popup = new Popup();
 
         final Image image = imager.getCardImage(name, SIZE_POPUP);

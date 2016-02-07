@@ -7,8 +7,17 @@ import com.goodformentertainment.tool.card.model.event.ChangeLocationEvent;
 import com.goodformentertainment.tool.event.EventDispatcher;
 
 public abstract class Placeable extends EventDispatcher {
-    protected boolean faceUp = true;
-    protected Optional<Location> location;
+    private final String name;
+    private boolean faceUp = true;
+    private Location location;
+
+    public Placeable(final String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     /**
      * Determines if this Placeable should be face up to all Players if placed.
@@ -39,7 +48,7 @@ public abstract class Placeable extends EventDispatcher {
      * @return
      */
     public Optional<Location> getLocation() {
-        return location;
+        return Optional.ofNullable(location);
     }
 
     /**
@@ -48,7 +57,7 @@ public abstract class Placeable extends EventDispatcher {
      * @return
      */
     public boolean isPlaced() {
-        return location.isPresent();
+        return location != null;
     }
 
     /**
@@ -57,7 +66,7 @@ public abstract class Placeable extends EventDispatcher {
      * @param location
      */
     public void place(final Location location) {
-        this.location = Optional.of(location);
+        this.location = location;
         dispatch(new ChangeLocationEvent());
     }
 
@@ -65,8 +74,9 @@ public abstract class Placeable extends EventDispatcher {
      * Pickup this Placeable.
      */
     public void pickup() {
-        if (location.isPresent()) {
-            location = Optional.empty();
+        if (location != null) {
+            location.pickup(this);
+            location = null;
             dispatch(new ChangeLocationEvent());
         }
     }

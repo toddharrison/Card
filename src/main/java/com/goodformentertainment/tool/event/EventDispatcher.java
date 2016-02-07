@@ -4,13 +4,15 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
 
 public class EventDispatcher {
     private static final Logger LOG = Logger.getLogger(EventDispatcher.class);
 
-    private static EventDispatcher instance = new EventDispatcher();
+    private static EventDispatcher instance;
 
     public static EventDispatcher getInstance() {
         if (instance == null) {
@@ -34,7 +36,7 @@ public class EventDispatcher {
     private final Collection<EventListener> listeners;
 
     public EventDispatcher() {
-        listeners = new ArrayList<>();
+        listeners = Collections.synchronizedCollection(new LinkedList<>());
     }
 
     public void register(final EventListener listener) {

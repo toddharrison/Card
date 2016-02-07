@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.goodformentertainment.tool.card.model.Card;
 import com.goodformentertainment.tool.card.model.CardStack;
+import com.goodformentertainment.tool.card.model.Context;
 import com.goodformentertainment.tool.card.model.Meld;
 import com.goodformentertainment.tool.card.model.Placeable;
 import com.goodformentertainment.tool.card.model.event.ChangeLengthEvent;
@@ -29,7 +30,9 @@ public class MeldView extends View<Meld> {
     private final FlowPane pane;
     private final List<View<?>> views;
 
-    public MeldView(final CardImager imager, final Stage stage, final Meld meld) {
+    public MeldView(final Context context, final CardImager imager, final Stage stage,
+            final Meld meld) {
+        super(context);
         this.imager = imager;
         this.stage = stage;
         this.meld = meld;
@@ -72,14 +75,14 @@ public class MeldView extends View<Meld> {
         for (final Placeable placeable : meld.getPlaceables()) {
             if (placeable instanceof Card) {
                 final Card card = (Card) placeable;
-                final CardView view = new CardView(imager, stage);
+                final CardView view = new CardView(context, imager, stage);
                 view.setParent(this);
                 view.setCard(card);
                 pane.getChildren().add(view.getPane());
                 views.add(view);
             } else if (placeable instanceof CardStack) {
                 final CardStack stack = (CardStack) placeable;
-                final StackView view = new StackView(imager, stage, stack);
+                final StackView view = new StackView(context, imager, stage, stack);
                 view.setParent(this);
                 pane.getChildren().add(view.getPane());
                 views.add(view);

@@ -1,21 +1,18 @@
 package com.goodformentertainment.tool.card.view;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.apache.log4j.Logger;
 
 import com.goodformentertainment.tool.card.model.Card;
 import com.goodformentertainment.tool.card.model.CardStack;
-import com.goodformentertainment.tool.card.model.Deck;
-import com.goodformentertainment.tool.card.model.Discard;
+import com.goodformentertainment.tool.card.model.Context;
 import com.goodformentertainment.tool.card.model.event.ChangeFirstCardEvent;
 import com.goodformentertainment.tool.card.model.event.ChangeLengthEvent;
 import com.goodformentertainment.tool.event.HandleEvent;
 
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.Menu;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -29,10 +26,12 @@ public class StackView extends View<CardStack> {
     private final CardView cardView;
     private final Label stackSize;
 
-    public StackView(final CardImager imager, final Stage stage, final CardStack stack) {
+    public StackView(final Context context, final CardImager imager, final Stage stage,
+            final CardStack stack) {
+        super(context);
         this.stack = stack;
         stack.register(this);
-        cardView = new CardView(imager, stage);
+        cardView = new CardView(context, imager, stage);
         cardView.setParent(this);
         stackSize = new Label();
         stackSize.getStyleClass().add(STYLE_STACK_SIZE);
@@ -63,19 +62,20 @@ public class StackView extends View<CardStack> {
     }
 
     @Override
-    public List<MenuItem> getViewMenuItems() {
-        final List<MenuItem> menuItems = new ArrayList<>();
-        if (stack instanceof Deck) {
-            final MenuItem draw = new MenuItem("Draw");
-            menuItems.add(draw);
-        } else if (stack instanceof Discard) {
-            final MenuItem take = new MenuItem("Take");
-            menuItems.add(take);
-        } else {
-            throw new UnsupportedOperationException(
-                    "Unknown CardStack type: " + stack.getClass().getName());
-        }
-        return menuItems;
+    public Optional<Menu> getViewMenuItems() {
+        // final List<MenuItem> menuItems = new ArrayList<>();
+        // if (stack instanceof Deck) {
+        // final MenuItem draw = new MenuItem("Draw");
+        // menuItems.add(draw);
+        // } else if (stack instanceof Discard) {
+        // final MenuItem take = new MenuItem("Take");
+        // menuItems.add(take);
+        // } else {
+        // throw new UnsupportedOperationException(
+        // "Unknown CardStack type: " + stack.getClass().getName());
+        // }
+        // return menuItems;
+        return Optional.empty();
     }
 
     private void updateStackSizeLabel() {

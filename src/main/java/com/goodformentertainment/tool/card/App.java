@@ -43,11 +43,11 @@ public class App extends Application {
 
     @Override
     public void start(final Stage stage) throws Exception {
-        final GameView gameView = new GameView(imager, stage, game);
+        final GameView gameView = new GameView(game, imager, stage, game);
 
         final Table table = game.getTable();
-        final Deck deck = createDeck(stage);
-        final Discard discard = new Discard();
+        final Deck deck = createPokerDeck(stage);
+        final Discard discard = new Discard("Discard 1");
         table.place(deck);
         table.place(discard);
 
@@ -85,7 +85,7 @@ public class App extends Application {
     // }
 
     private Deck createDeck(final Stage stage) {
-        final Deck deck = new Deck();
+        final Deck deck = new Deck("Deck 1");
 
         final String type = "build";
         imager.addType(type, "images/build-back.png");
@@ -94,6 +94,89 @@ public class App extends Application {
             imager.addCard(card.getName(), "images/build-" + i + ".png");
             deck.add(card);
         }
+
+        return deck;
+    }
+
+    private Deck createPokerDeck(final Stage stage) {
+        final Deck deck = new Deck("Poker");
+
+        imager.addType("blue", "images/poker/back_blue.png");
+        imager.addType("red", "images/poker/back_blue.png");
+
+        final String type = "blue";
+
+        for (int i = 2; i < 11; i++) {
+            final Card card = new Card(i + " of Spades", type);
+            imager.addCard(card.getName(), "images/poker/spades_" + i + ".png");
+            deck.add(card);
+        }
+        Card card = new Card("Jack of Spades", type);
+        imager.addCard(card.getName(), "images/poker/spades_jack.png");
+        deck.add(card);
+        card = new Card("Queen of Spades", type);
+        imager.addCard(card.getName(), "images/poker/spades_queen.png");
+        deck.add(card);
+        card = new Card("King of Spades", type);
+        imager.addCard(card.getName(), "images/poker/spades_king.png");
+        deck.add(card);
+        card = new Card("Ace of Spades", type);
+        imager.addCard(card.getName(), "images/poker/spades_ace.png");
+        deck.add(card);
+
+        for (int i = 2; i < 11; i++) {
+            card = new Card(i + " of Hearts", type);
+            imager.addCard(card.getName(), "images/poker/hearts_" + i + ".png");
+            deck.add(card);
+        }
+        card = new Card("Jack of Hearts", type);
+        imager.addCard(card.getName(), "images/poker/hearts_jack.png");
+        deck.add(card);
+        card = new Card("Queen of Hearts", type);
+        imager.addCard(card.getName(), "images/poker/hearts_queen.png");
+        deck.add(card);
+        card = new Card("King of Hearts", type);
+        imager.addCard(card.getName(), "images/poker/hearts_king.png");
+        deck.add(card);
+        card = new Card("Ace of Hearts", type);
+        imager.addCard(card.getName(), "images/poker/hearts_ace.png");
+        deck.add(card);
+
+        for (int i = 2; i < 11; i++) {
+            card = new Card(i + " of Clubs", type);
+            imager.addCard(card.getName(), "images/poker/clubs_" + i + ".png");
+            deck.add(card);
+        }
+        card = new Card("Jack of Clubs", type);
+        imager.addCard(card.getName(), "images/poker/clubs_jack.png");
+        deck.add(card);
+        card = new Card("Queen of Clubs", type);
+        imager.addCard(card.getName(), "images/poker/clubs_queen.png");
+        deck.add(card);
+        card = new Card("King of Clubs", type);
+        imager.addCard(card.getName(), "images/poker/clubs_king.png");
+        deck.add(card);
+        card = new Card("Ace of Clubs", type);
+        imager.addCard(card.getName(), "images/poker/clubs_ace.png");
+        deck.add(card);
+
+        for (int i = 2; i < 11; i++) {
+            card = new Card(i + " of Diamonds", type);
+            imager.addCard(card.getName(), "images/poker/diamonds_" + i + ".png");
+            deck.add(card);
+        }
+        card = new Card("Jack of Diamonds", type);
+        imager.addCard(card.getName(), "images/poker/diamonds_jack.png");
+        deck.add(card);
+        card = new Card("Queen of Diamonds", type);
+        imager.addCard(card.getName(), "images/poker/diamonds_queen.png");
+        deck.add(card);
+        card = new Card("King of Diamonds", type);
+        imager.addCard(card.getName(), "images/poker/diamonds_king.png");
+        deck.add(card);
+        card = new Card("Ace of Diamonds", type);
+        imager.addCard(card.getName(), "images/poker/diamonds_ace.png");
+        deck.add(card);
 
         return deck;
     }

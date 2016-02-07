@@ -1,4 +1,7 @@
 package com.goodformentertainment.tool.card.model;
 
-public class CardStack extends CardList {
+public abstract class CardStack extends CardList {
+    public CardStack(final String name) {
+        super(name);
+    }
 }

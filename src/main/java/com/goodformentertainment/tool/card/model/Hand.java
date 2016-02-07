@@ -7,7 +7,7 @@ public class Hand extends CardList {
     private final Player player;
 
     public Hand(final Player player) {
-        super();
+        super(player.getName() + "'s Hand");
         this.player = player;
     }
 

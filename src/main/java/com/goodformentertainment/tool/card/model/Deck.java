@@ -1,8 +1,8 @@
 package com.goodformentertainment.tool.card.model;
 
 public class Deck extends CardStack {
-    public Deck() {
-        super();
+    public Deck(final String name) {
+        super(name);
         setFaceUp(false);
     }
 

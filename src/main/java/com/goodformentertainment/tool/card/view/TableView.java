@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import com.goodformentertainment.tool.card.model.Card;
 import com.goodformentertainment.tool.card.model.CardStack;
+import com.goodformentertainment.tool.card.model.Context;
 import com.goodformentertainment.tool.card.model.Meld;
 import com.goodformentertainment.tool.card.model.Placeable;
 import com.goodformentertainment.tool.card.model.Table;
@@ -36,7 +37,9 @@ public class TableView extends View<Table> {
     private final List<View<?>> handViews;
     private final Map<Position, MeldView> meldViews;
 
-    public TableView(final CardImager imager, final Stage stage, final Table table) {
+    public TableView(final Context context, final CardImager imager, final Stage stage,
+            final Table table) {
+        super(context);
         this.imager = imager;
         this.stage = stage;
         this.table = table;
@@ -72,7 +75,7 @@ public class TableView extends View<Table> {
     }
 
     public void setMeld(final Meld meld, final Position position) {
-        final MeldView meldView = new MeldView(imager, stage, meld);
+        final MeldView meldView = new MeldView(context, imager, stage, meld);
         switch (position) {
             case EAST:
                 pane.setRight(meldView.getPane());
@@ -105,14 +108,14 @@ public class TableView extends View<Table> {
         for (final Placeable placeable : table.getPlaceables()) {
             if (placeable instanceof Card) {
                 final Card card = (Card) placeable;
-                final CardView view = new CardView(imager, stage);
+                final CardView view = new CardView(context, imager, stage);
                 view.setParent(this);
                 view.setCard(card);
                 centerPane.getChildren().add(view.getPane());
                 handViews.add(view);
             } else if (placeable instanceof CardStack) {
                 final CardStack stack = (CardStack) placeable;
-                final StackView view = new StackView(imager, stage, stack);
+                final StackView view = new StackView(context, imager, stage, stack);
                 view.setParent(this);
                 centerPane.getChildren().add(view.getPane());
                 handViews.add(view);

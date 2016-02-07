@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.goodformentertainment.tool.card.model.Context;
 import com.goodformentertainment.tool.card.model.Game;
 import com.goodformentertainment.tool.card.model.Player;
 import com.goodformentertainment.tool.card.model.event.AddPlayerEvent;
@@ -27,13 +28,15 @@ public class GameView extends View<Game> {
     private final TableView tableView;
     private final List<HandView> views;
 
-    public GameView(final CardImager imager, final Stage stage, final Game game) {
+    public GameView(final Context context, final CardImager imager, final Stage stage,
+            final Game game) {
+        super(context);
         this.imager = imager;
         this.stage = stage;
         this.game = game;
         views = new LinkedList<>();
 
-        tableView = new TableView(imager, stage, game.getTable());
+        tableView = new TableView(context, imager, stage, game.getTable());
         tableView.setParent(this);
 
         pane = new BorderPane();
@@ -62,7 +65,7 @@ public class GameView extends View<Game> {
 
         final Iterator<Position> positions = TableView.Position.iterator();
         for (final Player player : game.getPlayers()) {
-            final HandView handView = new HandView(imager, stage, player.getHand());
+            final HandView handView = new HandView(context, imager, stage, player.getHand());
             final Position position = positions.next();
             switch (position) {
                 case NORTH:

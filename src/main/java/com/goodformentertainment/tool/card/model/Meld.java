@@ -17,4 +17,15 @@ public class Meld extends Table {
             placeable.setFaceUp(faceUp);
         }
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("[Meld ");
+        for (final Placeable placeable : getPlaceables()) {
+            sb.append(placeable);
+        }
+        sb.append("]");
+        return sb.toString();
+    }
 }
