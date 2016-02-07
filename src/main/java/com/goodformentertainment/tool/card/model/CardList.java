@@ -36,9 +36,6 @@ public abstract class CardList extends Placeable {
     @Override
     public void place(final Location location) {
         super.place(location);
-        // for (final Card card : cards) {
-        // card.place(location);
-        // }
     }
 
     public List<Card> getCards() {

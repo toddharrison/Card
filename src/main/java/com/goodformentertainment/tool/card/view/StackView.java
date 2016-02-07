@@ -7,12 +7,14 @@ import org.apache.log4j.Logger;
 import com.goodformentertainment.tool.card.model.Card;
 import com.goodformentertainment.tool.card.model.CardStack;
 import com.goodformentertainment.tool.card.model.Context;
+import com.goodformentertainment.tool.card.model.Deck;
 import com.goodformentertainment.tool.card.model.event.ChangeFirstCardEvent;
 import com.goodformentertainment.tool.card.model.event.ChangeLengthEvent;
 import com.goodformentertainment.tool.event.HandleEvent;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -63,19 +65,32 @@ public class StackView extends View<CardStack> {
 
     @Override
     public Optional<Menu> getViewMenuItems() {
-        // final List<MenuItem> menuItems = new ArrayList<>();
-        // if (stack instanceof Deck) {
-        // final MenuItem draw = new MenuItem("Draw");
-        // menuItems.add(draw);
-        // } else if (stack instanceof Discard) {
-        // final MenuItem take = new MenuItem("Take");
-        // menuItems.add(take);
-        // } else {
-        // throw new UnsupportedOperationException(
-        // "Unknown CardStack type: " + stack.getClass().getName());
-        // }
-        // return menuItems;
-        return Optional.empty();
+        Menu menu = null;
+
+        if (stack instanceof Deck) {
+            final Deck deck = (Deck) stack;
+            if (menu == null) {
+                menu = new Menu("Deck");
+            }
+
+            final MenuItem shuffle = new MenuItem("Shuffle");
+            shuffle.setOnAction((event) -> {
+                deck.shuffle();
+            });
+            menu.getItems().add(shuffle);
+
+            final Menu refresh = new Menu("Refresh from");
+            context.getDiscards().forEach((target) -> {
+                final MenuItem menuItem = new MenuItem(target.getName());
+                menuItem.setOnAction((event) -> {
+                    deck.shuffleAndRefresh(target);
+                });
+                refresh.getItems().add(menuItem);
+            });
+            menu.getItems().add(refresh);
+        }
+
+        return Optional.ofNullable(menu);
     }
 
     private void updateStackSizeLabel() {
